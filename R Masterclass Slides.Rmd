@@ -1,0 +1,913 @@
+---
+title: "R Masterclass Slides"
+author: "Dr Emma Howard"
+date: "`r Sys.Date()`"
+header-includes:
+- \usepackage{booktabs}
+output:
+  beamer_presentation:
+    theme: Madrid
+    slide_level: 2
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE)
+```
+
+## Plan for Masterclass
+
+1.  Introduction to R/RStudio
+
+2.  Introduction to R Markdown
+
+3.  Loading and Formatting the Data
+
+4.  *Open session and Tea Break*
+
+5.  Manipulation of Data
+
+6.  Data Summaries
+
+7.  *Open session and Tea Break*
+
+8.  Graphical analysis
+
+9.  Bonus segment on cool things in RStudio
+
+10. *Open session and Feedback*
+
+# Introduction to R/RStudio
+
+## About R
+
+-   R is a language and environment for statistical computing and graphics: <https://www.r-project.org/>
+
+-   R was created by Ross Ihaka and Robert Gentlemen in the early 90s at the University of Auckland New Zealand.
+
+-   R was developed from another statistical language S.
+
+-   The R Core Team was formed in 1997 to further develop the language.
+
+-   Currently associated with R, there are 18,498 packages, 36,817 datasets, and 14,981 articles by 9,241 maintainers and 18,697 contributors.
+
+-   Version 4.3.0 (Already Tomorrow) will be released on 21st of April 2023.
+
+## Why use R (part 1)
+
+-   R is free and open-source
+
+-   R provides a wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, ...) and graphical techniques, and is highly extensible.
+
+-   It is available for Windows, Mac and Linux
+
+-   R can be used online with RStudio Cloud <https://rstudio.cloud/>
+
+-   It is considered better for statistical analysis than SAS, Stata, SPSS and Python
+
+## Why use R (part 2)
+
+-   For computationally-intensive tasks, C, C++ and Fortran code can be linked and called at run time. Advanced users can write C code to manipulate R objects directly.
+
+-   Extra functions can be imported through the use of packages i.e., R is augmented through packages
+
+-   Did I mention it is free?
+
+## RStudio
+
+| It is easier to use R through an Integrated Development Environment (IDE). The most popular IDE for R is RStudio.
+
+|   Features provided by RStudio include:
+
+-   syntax highlighting, code completion, smart indentation
+-   interactively send code chunks from editor to R
+-   organise multiple scripts, help files, plots
+-   search code and help files
+
+|   RStudio provides a few shortcuts to help write code in the R console go to Help - Keyboard Shortcuts Help
+
+## RStudio
+
+![](images/RStudio.png)
+
+# Introduction to R Markdown
+
+## Creating a R Markdown Documents
+
+1.  To create a new R Markdown document: go to File \> New File \> R Markdown
+
+-   The first time you use R Markdown on your machine you may be asked to install some R packages; if so, press Yes.
+
+2.  Select the type of output document you want to create.
+
+-   You are able to produce HTML output on any computer.
+-   To produce a Word document Microsoft Word needs to be installed.
+-   To produce pdf output you need to have LaTeX installed.
+
+*If and only if you do not have LaTeX installed (check by trying to compile a R Markdown pdf document), run the following lines to install LaTeX:*
+
+*install.packages("tinytex")*
+
+*tinytex::install_tinytex()*
+
+## Help with R Markdown Documents
+
+1.  An extended guide with tutorials is available on the RMarkdown website: <https://rmarkdown.rstudio.com/lesson-1.html>
+
+2.  R Markdown Cheatsheet <https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>
+
+3.  Free online book: [R Markdown for Scientists](https://rmd4sci.njtierney.com/)
+
+4.  Free online book: [R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/)
+
+## R Markdown Basics
+
+-   Headings
+
+-   Italics
+
+-   Bold
+
+-   Bullet Points
+
+-   Numbered Points
+
+## Next steps in R Markdown: TOC and Images
+
+-   Table of Contents
+
+![Table of Contents Code for YAML](images/toc.png){style="centered" width="280"}
+
+-   Inserting Images
+
+## Next steps in R Markdown: Formulas and LaTeX
+
+The style for formulas follows TeX syntax (proficiency with TeX syntax is not required). In general, you can use TeX syntax anywhere in the R Markdown documents. TeX is widely used as it makes it easy to include mathematical notations and formulas in documents.
+
+For example, an inline formula could be $ax^3 + bx + c = 0$. Otherwise, an equation would look like:
+
+$$
+\bar{X}_{ij} = \frac{1}{n}\sum_{i=1}^{n} X_i 
+\quad \quad \quad
+\mathcal{L}_{\textbf{X}}\left( \theta \right) = \prod_{i=1}^{n} f\left(x_i \middle \vert \theta \right)
+$$
+
+## Next steps in R Markdown: Colour
+
+> How to specify color depends on the format of your output
+
+**html output:**
+
+Roses are [red]{style="color: red;"}, and violets are [blue]{style="color: blue;"}. Colour is good to highlight a [point]{style="color: green;"}.
+
+**pdf output:**
+
+Roses are \textcolor{red}{red}, and violets are \textcolor{blue}{blue}. Colour is good to highlight a \textcolor{green}{point}.
+
+**html and pdf output:**
+
+```{r}
+# Code taken from: https://bookdown.org/yihui/rmarkdown-cookbook/font-color.html
+
+colorize <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color,
+      x)
+  } else x
+}
+```
+
+Roses are `r colorize("red", "red")`, and violets are `r colorize("blue", "blue")`. Colour is good to highlight a `r colorize("point", "green")`.
+
+## Embedding R Code (part 1)
+
+To embed code, on my keyboard, the special dash that we use is next to the "1" key:
+
+![](images/RCode.PNG)
+
+Or we can insert a code block using:
+
+![](images/Code%20Block.PNG){style="centered" width="110"}
+
+```{r}
+
+```
+
+## Embedding R Code (part 2)
+
+These initial lines are used to set up global options:
+
+```{r, echo=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this case, we intend to show both the code and the corresponding output, for every chunk of code. Note the option wheel on the right hand side of the text editor, which allows a more user friendly setup.
+
+Commonly used options are listed in the [\textcolor{blue}{R Markdown Cheat Sheet}](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf).
+
+## Embedding R Code (part 3)
+
+I have included here a chunk of code that will not appear in the document (however the output of the code does).
+
+```{r, echo=FALSE}
+x <- 5
+x
+```
+
+Note the option (echo=FALSE) that guarantees that the code will not appear. When you type in the comma after r, RStudio will prompt a lengthy list of options that we could choose from. For any given chunk you can temporary redefine any global option (i.e., local options override global options).
+
+## Basic operations (part 1)
+
+Let's define some variables:
+
+```{r}
+a = 2
+b = c(1, 2, 3)
+```
+
+The scalar $a$ and the vector $b$ are now defined and can be used in any of future code. If I want $a$ and $b$ to be accessible in the R environment (outside of this R Markdown document), I should click the highlighted button:
+
+![](images/Run.PNG)
+
+## Basic operations (part 2)
+
+Example of using $a$ and $b$:
+
+```{r}
+vec = a * b
+vec
+```
+
+The code can be added inline with the same dash symbol as the dash symbol used to define code blocks. For it to be recognised as R code, I need to write \` r (the code) \` and it will be evaluated. For example, \`sum(vec)\` is equal to `r sum(vec)`.
+
+# Loading and Formatting the Data
+
+## Reading in the Data (part 1)
+
+How we read in a dataset depends on:
+
+-   the format we want to work with, and
+
+-   the type of file we are importing.
+
+For the Masterclass, we will work with dataframes and the Maths Ed dataset\footnote{Alcock, L., Attridge, N., Kenny, S., \& Inglis, M. (2013). Achievement and Behaviour in Undergraduate Mathematics: Personality is a Better Predictor than Gender (Version 1). Loughborough University. https://doi.org/10.6084/m9.figshare.865640.v1}.
+
+## Reading in the Data (part 2)
+
+```{r}
+# Reading in a .csv file
+MathsTotal = read.csv("Maths_Ed.csv", header = TRUE)
+Maths = MathsTotal[,1:4] # work with first 4 columns only
+
+# Reading in a .txt file
+# name = read.table("name.txt", header = TRUE)
+
+# Reading in an excel file
+# install.packages("readxl")
+# require(readxl)
+# school = read_excel("Schools.xlsx") # tibble format
+
+```
+
+## Check the Data (part 1)
+
+```{r}
+# Check dimensions - number of rows and columns
+dim(Maths) # or use nrow(Maths) and ncol(Maths)
+
+# See a few rows of the data
+head(Maths) # Look at the first few rows of the data
+```
+
+## Check the Data (part 2)
+
+```{r}
+# Check the current structure of the data
+str(Maths) 
+```
+
+## Renaming the Columns
+
+```{r}
+# Renaming columns
+colnames(Maths) = c("Gender", "MSC_Use", 
+                    "VLE_Use", "Mark")
+
+# Always check any changes made!!!
+str(Maths)
+```
+
+## Check the Data (part 3)
+
+```{r}
+# Provides a quick summary of the data
+summary(Maths[,1:3])
+```
+
+## Formatting the Data
+
+![Data types and corresponding R Types](images/Data%20Types.jpg){style="centered"}
+
+## Formatting the Data
+
+```{r}
+# Make 'Gender' a nominal factor
+Maths$Gender = factor(Maths$Gender, 
+                      levels=c(0,1), 
+                      labels=c("Female", "Male"))
+
+# Make 'MSC_Use', 'VLE_Use' and 'Mark' numeric variables
+Maths$MSC_Use = as.numeric(Maths$MSC_Use)
+Maths$VLE_Use = as.numeric(Maths$VLE_Use)
+Maths$Mark = as.numeric(Maths$Mark)
+
+# Round 'Mark' to two decimal places
+Maths$Mark = round(Maths$Mark, 2)
+```
+
+## Formatting the Data
+
+```{r}
+# ... and check the structure!!!
+str(Maths)
+```
+
+# Manipulation of Data
+
+## Creating new variables (part 1)
+
+```{r}
+# Not realistic but... 
+# create a new variable for 'Total Engagement'
+# Maths$Total_engagement = Maths$VLE_Use + Maths$MSC_Use
+
+# or maybe....
+# Maths$Total_engagement = 
+        # Maths$VLE_Use + (10*Maths$MSC_Use)
+
+```
+
+*As the variable on the LHS 'Total Engagement' does not exist in the dataset, R will create a new variable/column called 'Total_Engagement' according to our formula on the RHS. This approach can also be used to overwrite variables if they already exist.*
+
+## Creating new variables (part 2)
+
+```{r}
+#Create a new variable called Grade
+Maths$Grade = cut(Maths$Mark, 
+    breaks = c(0, 40, 50, 60, 70, 100),
+    labels = c("F", "D", "C", "B", "A"),
+    right = FALSE)
+
+# Check the dataset
+head(Maths, n=3)
+```
+
+## Creating new variables (part 2)
+
+```{r}
+#Create a new variable called Grade
+Maths$Grade = factor(Maths$Grade, 
+    labels = c("F", "D", "C", "B", "A"),
+    levels = c("F", "D", "C", "B", "A"),
+    ordered = TRUE)
+```
+
+## Creating new variables (part 2)
+
+```{r}
+# Check the data
+str(Maths)
+```
+
+## Missing Data
+
+```{r}
+# Are there NAs?
+apply(Maths, 2, function(x) table(is.na(x))) 
+# apply(dataset name, by columns, function to be done)
+```
+
+## Missing Data
+
+Nearly all statistical techniques assume (or require) complete data. If cases with missing values are systematically different from cases without missing values, the results can be misleading.
+
+There are three types of missing data: 
+
+-   Missing Completely at Random (MCAR)
+
+-   Missing At Random (MAR)
+
+-   Missing Not At Random (MNAR)
+
+## Missing Data
+
+To test for MCAR versus MAR (cannot test for MNAR):
+
+- Create a dummy code for missing/non-missing in the dataset
+
+- Conduct a chi-square or independent samples t-test to determine if the missingness on that variable, relates to the outcome of interest. 
+
+- If the results are significant, then the data are MAR (you have a variable in your dataset that relates to missingness)
+
+## Missing Data
+
+
+```{r}
+Maths$VLE_Missing = ifelse(is.na(Maths$VLE_Use), 1, 0)
+t.test(Mark~VLE_Missing, data=Maths)
+```
+
+## Handling Missing Data
+
+1. Listwise deletion (data should be MCAR)
+
+2. Pairwise deletion (data should be MCAR)
+
+3. Last value carried forward (conservative)
+
+4. Mean/median imputation (no statistician will recommend)
+
+5. Multiple imputation
+
+6. Maximum likelihood approach
+
+## Handling Missing Data - Listwise Deletion
+
+```{r}
+# Remove rows with missing data
+Maths1 = Maths
+Maths1 = Maths1[complete.cases(Maths1), ]
+dim(Maths1)
+```
+
+## Handling Missing Data - Mean Imputation
+
+```{r}
+# A really bad approach...
+Maths2 = Maths
+Maths2$VLE_Use[is.na(Maths2$VLE_Use)] =
+  mean(Maths2$VLE_Use, na.rm = TRUE)
+```
+
+## Handling Missing Data - Multiple Imputation Example
+
+```{r, warning=FALSE}
+require(missForest)
+Maths3 = Maths
+Maths3b = missForest(Maths3)$ximp
+
+```
+
+## Handling Missing Data - Comparison
+
+```{r}
+summary(Maths1$VLE_Use) # listwise deletion
+summary(Maths2$VLE_Use) # mean imputation
+summary(Maths3b$VLE_Use) # imputation
+```
+
+# Data Summaries
+
+## Descriptive Statistics 
+
+```{r, eval = FALSE, include = TRUE}
+mean(Maths$MSC_Use) # mean
+median(Maths$MSC_Use) # median
+sd(Maths$MSC_Use) # standard deviation
+var(Maths$MSC_Use) # variance
+max(Maths$MSC_Use) # maximum
+min(Maths$MSC_Use) # minimum
+IQR(Maths$MSC_Use) # interquartile range
+```
+
+## Descriptive Statistics by Group
+
+```{r}
+tapply(Maths$MSC_Use, Maths$Grade, mean)
+tapply(Maths$MSC_Use, Maths$Gender, summary)
+```
+
+
+## Tables (counts)
+
+```{r, warning=FALSE}
+table(Maths$Gender)
+```
+
+```{r}
+table(Maths$Gender, Maths$Grade)
+```
+## Tables (Proportion)
+
+```{r}
+prop.table(table(Maths$Gender, Maths$Grade))
+```
+
+```{r}
+round(prop.table(table(Maths$Gender, Maths$Grade)),2)
+```
+
+
+
+## Tables (Proportion)
+
+```{r}
+require(magrittr)
+
+table(Maths$Gender, Maths$Grade) %>%
+  prop.table() %>% round(2)
+```
+
+## Tables (Proportion)
+
+```{r}
+table(Maths$Gender, Maths$Grade) %>%
+  prop.table(1) %>% round(2)
+```
+
+
+```{r, warning=FALSE, echo=FALSE}
+# install.packages("kableExtra")
+require(kableExtra) # For fancy tables
+```
+
+
+## Fancy Tables
+
+```{r, warning=FALSE}
+# Create summaries
+Maths_F = subset(Maths, Gender=="Female")
+MSC_USE_F = summary(Maths_F$MSC_Use) 
+MSC_USE_F = as.numeric(MSC_USE_F)
+
+Maths_M = subset(Maths, Gender=="Male")
+MSC_USE_M = summary(Maths_M$MSC_Use)
+MSC_USE_M = as.numeric(MSC_USE_M)
+
+table_summary = rbind.data.frame(MSC_USE_F, MSC_USE_M) 
+table_summary = round(table_summary,1)
+
+# Rename columns
+colnames(table_summary) = c("Min", "1st Quartile", "Median",
+                      "Mean", "3rd Quartile", "Max")
+```
+
+## Fancy Tables
+
+```{r}
+# Rename rows
+rownames(table_summary) = c("Female MSC Visits", 
+                            "Male MSC Visits")
+
+# Create Nice Table
+kable(table_summary, align = 'c', format = "simple")
+```
+
+## Fancy Tables
+
+
+```{r}
+kable(table_summary, align = 'c', 
+      caption = "Summary of MSC Visits by Gender", 
+      booktabs=TRUE) %>% 
+  kable_styling(font_size = 7) 
+
+```
+
+
+## Fancy Tables
+
+```{r, echo=FALSE, warning=FALSE}
+
+MSC_USE_F = summary(Maths$MSC_Use[Maths$Gender=="Female"]) 
+MSC_USE_F = as.numeric(MSC_USE_F)
+MSC_USE_M = summary(Maths$MSC_Use[Maths$Gender=="Male"])
+MSC_USE_M = as.numeric(MSC_USE_M)
+MSC_VLE_F = summary(Maths$VLE_Use[Maths$Gender=="Female"])
+MSC_VLE_F  = as.numeric(MSC_VLE_F)
+MSC_VLE_M = summary(Maths$VLE_Use[Maths$Gender=="Male"]) 
+MSC_VLE_M  = as.numeric(MSC_VLE_M)
+
+table_summary = rbind.data.frame(MSC_USE_F, MSC_USE_M, MSC_VLE_F, MSC_VLE_M) 
+table_summary = round(table_summary,1)
+
+colnames(table_summary) = c("Min", "1st Quartile", "Median",
+                      "Mean", "3rd Quartile", "Max", "NA")
+rownames(table_summary) = c("Female MSC Visits", "Male MSC Visits",
+                      "Female VLE Accesses", "Male VLE Accesses")
+
+kable(table_summary, align = 'c', 
+      caption = "Summary of Resource Usage by Gender", 
+      booktabs = TRUE) %>% pack_rows(
+  index = c("MSC Engagement" = 2, "VLE Engagement" = 2)
+) %>% kable_styling(font_size = 7)
+```
+
+
+## More on Tables
+
+Helpful Resources:
+
+-   <https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html>
+
+- <https://bookdown.org/yihui/rmarkdown-cookbook/kableextra.html>
+
+
+Quick summary tables:
+```{r}
+# install.packages("skimr")
+# require(skimr)
+# skim(Maths)
+
+```
+
+# Graphical Analysis - ggplot2
+
+- Two approaches to plotting: Base R and ggplot2
+
+ggplot2 is a package that produces plots based on the grammar of graphics (Leland Wilkinson), the idea is that you can split the graph into components:
+
+- a data set
+
+- scale
+
+- a co-ordinate system
+
+- geoms (points, lines, bars, etc.)
+
+- annotation
+
+## Graphical Analysis - ggplot2
+
+ggplot2 is fully customisable
+
+You can:
+
+- colour geoms
+
+- colour based on a factor
+
+- manipulate all aspects of a legend
+
+- adjust format of text (size, colour, style)
+
+
+For more on ggplot2, see the [\textcolor{blue}{ggplot2 cheatsheet}](https://lscholtus.gitlab.io/mosaicdata/ggplot2-cheatsheet-2.0.pdf)
+
+```{r, message=FALSE, echo=FALSE}
+require(ggplot2)
+```
+
+
+## Histogram of Marks - create co-orinate system for data
+
+```{r, fig.height=3, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(Mark)) 
+
+```
+
+## Histogram of Marks - add geom
+
+```{r, fig.height=3, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(Mark)) +
+  geom_histogram(bins=10) 
+
+```
+
+## Histogram of Marks - add/change axis labels
+
+```{r, fig.height=2.5, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(Mark)) +
+  geom_histogram(bins=10) +
+  labs(x="Maths Module Marks", y="Frequency", 
+       title="Histogram of Marks") 
+
+```
+
+## Histogram of Marks - add colour
+
+```{r, fig.height=2.5, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(Mark)) + 
+  geom_histogram(bins=10, fill="blue", color = "black") +
+  labs(x="Maths Module Marks", y="Frequency")
+
+```
+
+## Histogram of Marks - change background
+
+
+```{r, fig.height=2.5, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(Mark)) + 
+    geom_histogram(bins=10, fill="blue", color = "black") +
+  labs(x="Maths Module Marks", y="Frequency") +
+  theme_bw()
+
+```
+
+## Boxplot of Marks ~ Gender
+
+```{r, fig.height=3, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(x=Gender, y=Mark, fill=Gender)) +
+  geom_boxplot() + theme_bw()
+```
+
+## Boxplot of Marks ~ Gender (no legend)
+
+```{r, fig.height=3, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(x=Gender, y=Mark, fill=Gender)) +
+  geom_boxplot() + theme_bw() + 
+  theme(legend.position = 'None') + geom_jitter() 
+```
+
+## Boxplot of Marks ~ Gender (change colour palette)
+
+```{r, fig.height=2.5, fig.width=6, fig.align='center', warning=FALSE}
+require(viridis)
+ggplot(Maths, aes(x=Gender, y=Mark, fill=Gender)) +
+  geom_boxplot() + theme_bw() + 
+  scale_fill_viridis(discrete=TRUE, option = 'D')
+```
+
+## Scatterplot of VLE Use versus MSC Use
+
+```{r, warning=FALSE, fig.height=3, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(x=MSC_Use, y=VLE_Use))+
+         geom_point() + theme_bw() + stat_smooth()
+```
+
+## Scatterplot of VLE Use versus MSC Use
+
+```{r, warning=FALSE, fig.height=3, fig.width=6, fig.align='center'}
+ggplot(Maths, aes(x=MSC_Use, y=VLE_Use, color=Gender)) + 
+         geom_point() + theme_bw() + ylim(c(0, 1000))
+```
+
+## Scatterplot of VLE Use versus MSC Use
+
+```{r, warning=FALSE, fig.height=2.8, fig.width=6, fig.align='center'}
+p <- ggplot(Maths, aes(x=MSC_Use, y=VLE_Use))+
+         geom_point() + theme_bw()
+p +facet_wrap(~`Gender`)
+```
+
+## Interactive Scatterplot of VLE Use versus MSC Use
+
+```{r, warning=FALSE, eval=FALSE}
+#install.packages("plotly")
+require(plotly)
+
+p<- ggplot(Maths, aes(x=MSC_Use, y=VLE_Use, color=Gender))+
+         geom_point() + theme_bw()
+
+ggplotly(p) # mkes it interactive
+```
+
+
+## Barplot
+
+```{r, echo=FALSE, fig.height=6}
+
+#Data for example - number of visitors to the MSC Maths Support Centre
+MSC = data.frame(Year=1:4, Freq=c(48, 42, 24, 48),
+                  Total = c(342, 243, 345, 213),
+                  prop = c(14, 17, 7, 22.5))
+
+ggplot(data = MSC) + 
+  geom_col(aes(x = Year, y = prop, fill = prop)) + #geom_col used for a bar plot
+  theme_bw() +
+  scale_y_continuous(breaks = seq(0, 35, 5), limits = c(0,25))+ 
+  labs(x="Year of Students", y="Proportion\nwho used\nthe MSC (%)") + 
+  theme(
+    plot.title    = element_text(lineheight=0, color = 'black', face = "bold", size = 13),
+    axis.title.x  = element_text(angle=0, color = 'black', face='bold', size = 11),
+    axis.title.y  = element_text(angle=0, vjust = 1, color = 'black',face = 'bold', size = 11),
+    axis.text.x   = element_text(angle=0, color = 'black', size = 11),
+    axis.text.y   = element_text(angle=0, color = 'black',  size = 11)
+  )  +   theme(legend.position = "none") +
+  geom_text(aes(label = paste('n =', Freq), x= Year, y = prop + 0.6)) # add number of students on top of each bar
+
+```
+
+# Random and Cool Stuff
+
+## Catterplots
+
+```{r, warning=FALSE, echo=FALSE}
+
+library(devtools)
+#install_github('Gibbsdavidl/CatterPlots')
+library(CatterPlots)
+
+x <- -10:10
+y <- -x^2 + 10
+purr <- catplot(xs=x, ys=y, cat=3, catcolor='#000000FF')
+cats(purr, -x, -y, cat=4, catcolor='#FF0000')
+
+```
+
+
+## Catterplots
+
+```{r, echo=FALSE}
+
+meow <- multicat(xs=x, ys=rnorm(21),
+                 cat=c(1,2,3,4,5,6,7,8,9,10),
+                 catcolor=list('#33FCFF'),
+                 canvas=c(-0.1,1.1, -0.1, 1.1),
+                 xlab="some cats", ylab="other cats", main="Random Cats")
+```
+
+
+## Beep Beep
+
+```{r, warning=FALSE}
+#install.packages("beepr")
+#library(beepr)
+#beep(3)
+#beep(4)
+#beep(5)
+#beep(0)
+```
+
+
+## Wellbeing
+
+```{r, warning=FALSE}
+#install.packages("praise")
+require(praise)
+praise() 
+praise()
+praise()
+```
+## Maps
+
+```{r, echo=FALSE, warning=FALSE}
+# Retrieved from the Viridis Package Vignette
+
+library(mapproj)
+
+data(unemp, package = "viridis")
+
+county_df <- map_data("county", projection = "albers", parameters = c(39, 45))
+names(county_df) <- c("long", "lat", "group", "order", "state_name", "county")
+county_df$state <- state.abb[match(county_df$state_name, tolower(state.name))]
+county_df$state_name <- NULL
+
+state_df <- map_data("state", projection = "albers", parameters = c(39, 45))
+
+choropleth <- merge(county_df, unemp, by = c("state", "county"))
+choropleth <- choropleth[order(choropleth$order), ]
+
+ggplot(choropleth, aes(long, lat, group = group)) +
+  geom_polygon(aes(fill = rate), colour = alpha("white", 1 / 2), size = 0.2) +
+  geom_polygon(data = state_df, colour = "white", fill = NA) +
+  coord_fixed() +
+  theme_minimal() +
+  ggtitle("US unemployment rate by county") +
+  theme(axis.line = element_blank(), axis.text = element_blank(),
+        axis.ticks = element_blank(), axis.title = element_blank()) +
+  scale_fill_viridis(option="magma")
+```
+
+
+## Interactive plots
+
+```{r, eval = FALSE}
+
+library(gganimate)
+require(gapminder)
+
+# Taken from the gganimate examples: https://gganimate.com/
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+
+
+```
+
+
+## Galleries
+
+Example of plots:
+<https://r-graph-gallery.com/>
+
+Extensions to ggplot2:
+<https://exts.ggplot2.tidyverse.org/gallery/>
+
+Examples of RShiny apps: <https://shiny.rstudio.com/gallery/>
+
+## Conclusion
+
+\centering
+
+Thank you for attending :)
+
